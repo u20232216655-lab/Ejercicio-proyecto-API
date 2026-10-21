@@ -1,4 +1,4 @@
-<ion-header [translucent]="true" class="ion-no-border">
+  <ion-header [translucent]="true" class="ion-no-border">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-icon name="phone-portrait-outline" class="toolbar-brand-icon ion-padding-start"></ion-icon>
@@ -159,5 +159,55 @@
       </ion-content>
     </ng-template>
   </ion-modal>
+
+
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Catálogo de productos</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content class="ion-padding">
+
+    @if (cargando) {
+      <div class="ion-text-center">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Cargando productos...</p>
+      </div>
+    } @else if (error) {
+      <ion-text color="danger">
+        <p>Error al cargar los productos. Intenta nuevamente.</p>
+      </ion-text>
+    } @else {
+      <ion-grid>
+        <ion-row>
+          @for (item of items; track item.id) {
+            <ion-col size="12" size-md="6" size-lg="4">
+              <ion-card>
+                <ion-img
+                  [src]="item.thumbnail"
+                  [alt]="item.title">
+                </ion-img>
+
+                <ion-card-header>
+                  <ion-card-title>
+                    {{ item.title }}
+                  </ion-card-title>
+                </ion-card-header>
+
+                <ion-card-content>
+                  <p>{{ item.description }}</p>
+                  <p><strong>Categoría:</strong> {{ item.category }}</p>
+                  <p><strong>Precio:</strong> {{ item.price | currency:'USD' }}</p>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+          }
+        </ion-row>
+      </ion-grid>
+    }
+
+  </ion-content>
+
 
 </ion-content>

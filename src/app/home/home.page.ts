@@ -1,6 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { CurrencyPipe } from '@angular/common';
+
 import {
   IonHeader,
   IonToolbar,
@@ -22,7 +24,13 @@ import {
   IonButtons,
   IonIcon,
   IonBadge,
-  IonModal
+  IonModal,
+  IonImg,
+  IonSpinner,
+  IonText,
+  IonGrid,
+  IonRow,
+  IonCol,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -34,6 +42,16 @@ import {
 } from 'ionicons/icons';
 import { BookingRequest, AVAILABLE_SERVICES, ServiceCategory } from '../models/booking-request.model';
 import { FeedbackService } from '../services/feedback.service';
+import { ApiService } from '../services/api.service';
+
+interface Producto {
+  id: number;
+  title: string;
+  description: string;
+  category: string;
+  price: number;
+  thumbnail: string;
+}
 
 @Component({
   selector: 'app-home',
@@ -41,6 +59,7 @@ import { FeedbackService } from '../services/feedback.service';
   styleUrls: ['home.page.scss'],
   standalone: true,
   imports: [
+    CurrencyPipe,
     CommonModule,
     FormsModule,
     IonHeader,
@@ -63,7 +82,13 @@ import { FeedbackService } from '../services/feedback.service';
     IonButtons,
     IonIcon,
     IonBadge,
-    IonModal
+    IonModal,
+    IonImg,
+    IonSpinner,
+    IonText,
+    IonGrid,
+    IonRow,
+    IonCol,
   ]
 })
 export class HomePage {
@@ -89,6 +114,8 @@ export class HomePage {
       closeCircleOutline
     });
   }
+
+  
 
   setTermsModalOpen(isOpen: boolean): void {
     this.isTermsModalOpen = isOpen;
@@ -125,5 +152,25 @@ export class HomePage {
       summaryMessage,
       'Aceptar y Finalizar'
     );
+  }
+
+  private apiService = inject(ApiService);
+
+  items: Producto[] = [];
+  cargando = true;
+  error = false;
+
+  ngOnInit() {
+    this.apiService.getItems().subscribe({
+      next: (data) => {
+        this.items = data;
+        this.cargando = false;
+      },
+      error: (err) => {
+        console.error('Error al obtener productos:', err);
+        this.error = true;
+        this.cargando = false;
+      }
+    });
   }
 }
